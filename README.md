@@ -2,7 +2,7 @@
 
 > 破译过程可视化：把一段密文丢进来，看频率分析的柱状谱亮起、凯撒/维吉尼亚密钥逐位"旋转"破解、异或加密的比特流滚动。最后解出明文时，整屏霓虹闪烁一下。
 
-**线上预览：** *部署后自动生效（GitHub Pages）*
+**线上预览：** 🔗 [https://x-lsh.github.io/cipher-theater/](https://x-lsh.github.io/cipher-theater/) · **仓库：** [github.com/X-LSH/cipher-theater](https://github.com/X-LSH/cipher-theater)
 
 ## ✨ 四幕剧场
 
