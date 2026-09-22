@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>密码剧场 · Cipher Theater｜破译过程可视化</title>
-  <meta name="description" content="把一段密文丢进来：频率分析柱状谱亮起、凯撒与维吉尼亚密钥逐位旋转破解、XOR 比特流滚动解体——四幕交互式密码破译可视化剧场。">
+  <meta name="description" content="频率分析柱状谱、凯撒罗盘、单表替换映射卡、维吉尼亚密钥、栅栏之字、恩尼格玛转子、XOR 比特流、RSA 分解——八幕交互式密码破译可视化剧场。">
   <meta property="og:title" content="密码剧场 · Cipher Theater">
-  <meta property="og:description" content="四幕交互式破译可视化：看密文在你眼前被撕开。">
+  <meta property="og:description" content="八幕交互式破译可视化：看密文在你眼前被撕开。">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
@@ -22,22 +22,50 @@
 
   <header class="site-header">
     <a class="logo" href="index.html">密码<span>剧场</span></a>
-    <nav class="site-nav">
-      <a href="#act-frequency">频率分析</a>
-      <a href="#act-caesar">凯撒</a>
-      <a href="#act-vigenere">维吉尼亚</a>
-      <a href="#act-xor">XOR</a>
+    <div class="site-nav">
       <a href="articles.html">冷知识</a>
-    </nav>
+      <!-- 节目单：八幕扩容后的右上角答案 -->
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>四篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
   </header>
+
+  <!-- 屏幕右缘的幕次导轨：滚动时高亮当前一幕 -->
+  <nav class="act-rail" id="actRail" aria-label="幕次导航">
+    <a href="#act-frequency" title="第Ⅰ幕 频率分析"><i>Ⅰ</i></a>
+    <a href="#act-caesar" title="第Ⅱ幕 凯撒密码"><i>Ⅱ</i></a>
+    <a href="#act-substitution" title="第Ⅲ幕 单表替换"><i>Ⅲ</i></a>
+    <a href="#act-vigenere" title="第Ⅳ幕 维吉尼亚"><i>Ⅳ</i></a>
+    <a href="#act-rail" title="第Ⅴ幕 栅栏密码"><i>Ⅴ</i></a>
+    <a href="#act-enigma" title="第Ⅵ幕 恩尼格玛"><i>Ⅵ</i></a>
+    <a href="#act-xor" title="第Ⅶ幕 XOR 流密码"><i>Ⅶ</i></a>
+    <a href="#act-rsa" title="第Ⅷ幕 RSA"><i>Ⅷ</i></a>
+  </nav>
 
   <!-- ============================ HERO ============================ -->
   <section class="hero">
     <p class="hero__kicker">CIPHER&nbsp;THEATER</p>
     <h1 class="hero__title">把密文丢进来，<br><span class="neon-underline">看它在你眼前被撕开</span></h1>
     <p class="hero__sub">
-      频率分析的柱状谱亮起 · 凯撒罗盘旋转穷举 · 维吉尼亚密钥逐位崩塌 · XOR 比特流滚动解体——
-      四幕交互式破译剧场，全部在你的浏览器里本地运行。
+      柱状谱亮起 · 罗盘旋转穷举 · 26 张映射卡翻转归位 · 密钥逐位崩塌 · 栅栏之字穿行 · 转子飞转锁定 · 比特流解体 · 公钥当面被拆——
+      八幕交互式破译剧场，全部在你的浏览器里本地运行。
     </p>
     <div class="hero__cta">
       <a class="btn btn--neon" href="#act-frequency">▶ 进入剧场</a>
@@ -164,10 +192,58 @@
       </p>
     </section>
 
-    <!-- ======================= 第 III 幕：维吉尼亚 ======================= -->
-    <section id="act-vigenere" class="act">
+    <!-- ======================= 第 III 幕：单表替换 ======================= -->
+    <section id="act-substitution" class="act">
       <div class="act__head">
         <span class="act__num">第 III 幕</span>
+        <h2>单表替换 · 26 张映射卡翻转归位</h2>
+        <p>
+          凯撒只是把字母表整体平移，单表替换则把整个字母表<b>彻底洗牌</b>——排列方式多到写不完。
+          可语言的指纹还在：先按频次把密文字母对上英语常用字母，
+          再用<b>二元字母组</b>（相邻字母对的统计规律）与常见词得分反复修正，
+          直到 26 张映射卡一张张翻到正确答案。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">单表替换密文（建议 60+ 字母）</span>
+            <textarea id="substInput" rows="2" spellcheck="false" placeholder="粘贴单表替换密文…"></textarea>
+          </label>
+          <div class="field field--btns">
+            <button id="substCrack" class="btn btn--neon" type="button">⚙ 开始破译</button>
+            <div class="btn-row">
+              <button id="substSample" class="btn btn--ghost btn--sm" type="button">换样例</button>
+              <button id="substReset" class="btn btn--ghost btn--sm" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="substMap" class="subst-map" aria-live="polite"></div>
+
+        <p class="stage-status" id="substStatus">待命</p>
+
+        <div id="substResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <button id="substCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+          </div>
+          <p id="substHits" class="reveal-hits"></p>
+          <blockquote id="substPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        福尔摩斯在《跳舞的小人》里遇到的就是单表替换——每个小人代表字母表里的一个字母，破案靠的正是频次与语感。
+        <a href="index.html#act-frequency">回到频率分析 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 IV 幕：维吉尼亚 ======================= -->
+    <section id="act-vigenere" class="act">
+      <div class="act__head">
+        <span class="act__num">第 IV 幕</span>
         <h2>维吉尼亚 · 密钥逐位旋转归位</h2>
         <p>
           维吉尼亚用一串字母轮换着推移，把频率谱抹平，曾号称「不可破译密码」。
@@ -224,10 +300,141 @@
       </p>
     </section>
 
-    <!-- ======================= 第 IV 幕：XOR ======================= -->
+    <!-- ======================= 第 V 幕：栅栏密码 ======================= -->
+    <section id="act-rail" class="act">
+      <div class="act__head">
+        <span class="act__num">第 V 幕</span>
+        <h2>栅栏密码 · 之字穿行与栏数穷举</h2>
+        <p>
+          不换字母，只换位置：把明文按<b>之字形</b>依次写进 N 条栏，再一行行读出——
+          字母一个没少，顺序却被彻底打乱。点击栏数按钮看密文如何随栅栏变宽变窄；
+          按下破译，2~8 条栏会逐一试排，明文得分最高者胜出。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">栅栏密文</span>
+            <textarea id="railInput" rows="2" spellcheck="false" placeholder="粘贴栅栏密文…"></textarea>
+          </label>
+          <div class="field field--btns">
+            <button id="railCrack" class="btn btn--neon" type="button">⚙ 穷举破译</button>
+            <div class="btn-row">
+              <button id="railSample" class="btn btn--ghost btn--sm" type="button">换样例</button>
+              <button id="railReset" class="btn btn--ghost btn--sm" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field__label">展示栏数（按当前密文重新铺栅栏）</span>
+          <div class="chip-row" id="railChips">
+            <button class="chip" data-rails="2" type="button">2 栏</button>
+            <button class="chip" data-rails="3" type="button">3 栏</button>
+            <button class="chip is-active" data-rails="4" type="button">4 栏</button>
+            <button class="chip" data-rails="5" type="button">5 栏</button>
+            <button class="chip" data-rails="6" type="button">6 栏</button>
+          </div>
+        </div>
+
+        <div class="rail-wrap">
+          <div id="railGrid" class="rail-grid" aria-live="polite"></div>
+        </div>
+
+        <div class="caesar-rows" id="railRows" aria-live="polite"></div>
+
+        <p class="stage-status" id="railStatus">待命</p>
+
+        <div id="railResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <div class="btn-row">
+              <span class="key-badge">栏数 <b id="railWin"></b></span>
+              <button id="railCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+            </div>
+          </div>
+          <blockquote id="railPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        💡 这是<b>转置密码</b>：字母的统计特征原封不动，所以频率分析对它完全失效——只能靠穷举栏数硬试。
+        <a href="index.html#act-caesar">对比换字母的凯撒 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 VI 幕：恩尼格玛 ======================= -->
+    <section id="act-enigma" class="act">
+      <div class="act__head">
+        <span class="act__num">第 VI 幕</span>
+        <h2>恩尼格玛 · 转子旋转与 17,576 种起手式</h2>
+        <p>
+          三个接线转子每按一键就转一格，反射板折返电流，让<b>任何字母都不会加密成自身</b>。
+          本演示按真实 Ⅰ/Ⅱ/Ⅲ 号转子接线与「双步进」规则模拟；
+          假设接线板设置被缴获、转子顺序已知，剩下的就只是一次 <b>26³ = 17,576</b> 的穷举——
+          按下攻击，三只转子窗会像老虎机一样飞转，直到锁定当日起手位置。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">恩尼格玛密文</span>
+            <textarea id="enigmaInput" rows="2" spellcheck="false" placeholder="粘贴恩尼格玛密文…"></textarea>
+          </label>
+          <label class="field">
+            <span class="field__label">已知明文口令（crib）</span>
+            <input id="enigmaCrib" type="text" maxlength="40" spellcheck="false">
+          </label>
+          <label class="field">
+            <span class="field__label">已知接线板（假设缴获）</span>
+            <input id="enigmaPB" type="text" maxlength="20" spellcheck="false">
+          </label>
+        </div>
+
+        <div class="enigma-stage">
+          <div class="enigma-config">
+            <span class="enigma-chip">转子 <b>I · II · III</b></span>
+            <span class="enigma-chip">反射板 <b>B</b></span>
+            <span class="enigma-chip">转环 <b>AAA</b></span>
+          </div>
+          <div class="enigma-rotors" id="enigmaRotors">
+            <div class="enigma-rotor" data-r="0"><small>左</small><b>?</b></div>
+            <div class="enigma-rotor" data-r="1"><small>中</small><b>?</b></div>
+            <div class="enigma-rotor" data-r="2"><small>右</small><b>?</b></div>
+          </div>
+          <div class="enigma-counter">
+            <span class="enigma-counter__label">已穷举初始位置</span>
+            <b id="enigmaTried">0</b><small>/ 17,576</small>
+          </div>
+          <button id="enigmaAttack" class="btn btn--magenta" type="button">⚔ 发起穷举</button>
+        </div>
+
+        <p class="stage-status" id="enigmaStatus">待命</p>
+
+        <div id="enigmaResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <div class="btn-row">
+              <span class="key-badge">起手位置 <b id="enigmaPos"></b></span>
+              <button id="enigmaCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+            </div>
+          </div>
+          <blockquote id="enigmaPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        真正把恩尼格玛送进坟墓的不是穷举，而是德军每天清晨重复使用的起手口令——
+        <a href="articles/enigma.html">波兰三杰与「炸弹机」的故事 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 VII 幕：XOR ======================= -->
     <section id="act-xor" class="act">
       <div class="act__head">
-        <span class="act__num">第 IV 幕</span>
+        <span class="act__num">第 VII 幕</span>
         <h2>XOR 流密码 · 比特流滚动解体</h2>
         <p>
           现代加密的最底层动作只有一个：<b>异或</b>——相同得 0，不同得 1。
@@ -276,6 +483,85 @@
       <p class="act__foot">
         有一种加密，密钥和明文一样长、只用一次、绝不重复——它是唯一被数学证明「绝对安全」的。
         <a href="articles/otp.html">一次性密码本 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 VIII 幕：RSA ======================= -->
+    <section id="act-rsa" class="act">
+      <div class="act__head">
+        <span class="act__num">第 VIII 幕</span>
+        <h2>RSA · 公钥加密与分解的赌局</h2>
+        <p>
+          前七幕的钥匙都得偷偷传送，RSA 却把<b>锁公开、钥匙保密</b>：
+          任何人都能用公钥 (n=3233, e=17) 加密，但只有握着私钥 d 的人能解开。
+          安全性赌的只有一件事——<b>把 n 分解回两个质数有多难</b>。
+          看攻击者当着你的面试除 n、反推 φ、夺走私钥；再想想现实中的 2048 位为什么至今安然无恙。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">明文（纯字母，最多 16 个）</span>
+            <input id="rsaInput" type="text" maxlength="16" spellcheck="false">
+          </label>
+          <div class="field field--btns">
+            <button id="rsaEncrypt" class="btn btn--neon" type="button">🔒 公钥加密</button>
+            <div class="btn-row">
+              <button id="rsaSample" class="btn btn--ghost btn--sm" type="button">换样例</button>
+              <button id="rsaReset" class="btn btn--ghost btn--sm" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rsa-keys">
+          <div class="rsa-card">
+            <span class="rsa-card__tag">公钥 PUBLIC</span>
+            <b class="rsa-card__big">n = 3233</b>
+            <b class="rsa-card__mid">e = 17</b>
+            <small>可以贴在门口，人人可见</small>
+          </div>
+          <div class="rsa-card rsa-card--private is-locked" id="rsaPrivate">
+            <span class="rsa-card__tag">私钥 PRIVATE</span>
+            <b class="rsa-card__big">n = 3233</b>
+            <b class="rsa-card__mid" id="rsaD">d = ?? ?? ??</b>
+            <small id="rsaPrivateHint">只有分解 n 才能推算——目前安全</small>
+          </div>
+        </div>
+
+        <div class="rsa-blocks">
+          <div class="rsa-blocks__row"><span>明文块 m（两字母一组，A=0）</span><code id="rsaMBlocks">—</code></div>
+          <div class="rsa-blocks__row"><span>c = m<sup>17</sup> mod 3233</span><code id="rsaCBlocks">—</code></div>
+        </div>
+
+        <div id="rsaSteps" class="rsa-steps" aria-live="polite"></div>
+
+        <p class="stage-status" id="rsaStatus">待命</p>
+
+        <div class="attack-panel">
+          <div class="attack-panel__head">
+            <h4>⚔ 攻击者：分解 n</h4>
+            <p>最朴素的试除法：从 2 开始一路除下去。玩具密钥 n=3233 撑不了几行——</p>
+            <div class="btn-row">
+              <button id="rsaAttack" class="btn btn--magenta" type="button">发起分解</button>
+              <button id="rsaDecrypt" class="btn btn--magenta" type="button" disabled>🔓 用私钥解密</button>
+            </div>
+          </div>
+          <div id="rsaFactorRows" class="rsa-factor-rows"></div>
+        </div>
+
+        <div id="rsaResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <button id="rsaCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+          </div>
+          <blockquote id="rsaPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        现实中的 RSA-2048，n 有 617 位十进制数字；经典计算机分解它需要宇宙年龄级别的时间。
+        而量子计算机上的 Shor 算法能在多项式时间内瓦解 RSA——下一代密码学已经在起跑线上了。
       </p>
     </section>
 
@@ -332,6 +618,10 @@
   <script src="js/caesar.js"></script>
   <script src="js/vigenere.js"></script>
   <script src="js/xor.js"></script>
+  <script src="js/substitution.js"></script>
+  <script src="js/rail.js"></script>
+  <script src="js/enigma.js"></script>
+  <script src="js/rsa.js"></script>
   <script>
     // 罗盘 26 格刻度（纯装饰，随脚本生成）
     (function () {

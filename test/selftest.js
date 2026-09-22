@@ -64,5 +64,71 @@ check('恢复密钥=SECRET', atk.key === 'SECRET');
 check('XOR 自反', CT.bytesToString(CT.xorCrypt(cb, kb)) === 'ATTACK AT DAWN');
 check('比特流长度=8×字节', CT.bytesToBits(cb).length === cb.length * 8);
 
+console.log('— 单表替换（关键词字母表 + 爬山法）—');
+const subPlain = CT.SAMPLES.substitution.plain;
+const alpha = CT.keywordCipherAlphabet('CIPHER');
+console.log('  字母表:', alpha);
+const subCipher = CT.substEncrypt(subPlain, alpha);
+console.log('  密文:', subCipher.slice(0, 50) + '…');
+check('字母表长度26且无重复', alpha.length === 26 && new Set(alpha).size === 26);
+const subRes = CT.solveSubstitution(subCipher);
+console.log('  爬山', subRes.passes, '轮, 得分', Math.round(subRes.score));
+check('替换明文完全还原', subRes.plain === subPlain,
+  subRes.plain.slice(0, 60));
+
+console.log('— 栅栏密码 —');
+const railPlain = CT.SAMPLES.rail.plain;
+const railCipher = CT.railFenceEncrypt(railPlain, 4);
+console.log('  密文:', railCipher.slice(0, 50) + '…');
+check('栅栏往返一致(3栏)', CT.railFenceDecrypt(CT.railFenceEncrypt(railPlain, 3), 3) === railPlain);
+check('栅栏往返一致(7栏)', CT.railFenceDecrypt(CT.railFenceEncrypt(railPlain, 7), 7) === railPlain);
+const railCrack = CT.railFenceCrack(railCipher, 8);
+console.log('  最佳栏数:', railCrack[0].rails);
+check('栅栏穷举4栏获胜', railCrack[0].rails === 4 && railCrack[0].plain === railPlain,
+  'got rails=' + railCrack[0].rails);
+
+console.log('— 恩尼格玛 —');
+const enPlain = CT.SAMPLES.enigma.plain;
+const enCfg = { rotors: ['I', 'II', 'III'], reflector: 'B', plugboard: CT.SAMPLES.enigma.plugboard };
+const startPos = [7, 4, 2];
+const enCipher = CT.enigmaEncryptText(enPlain, startPos, enCfg);
+console.log('  密文:', enCipher.slice(0, 40) + '…');
+check('恩尼格玛确定性(同设置同密文)',
+  CT.enigmaEncryptText(enPlain, startPos, enCfg) === enCipher);
+// 自反性：任何字母不会加密成自身
+let selfOk = true;
+for (let i = 0; i < 26; i++) {
+  const st = { pos: [0, 0, 0] };
+  if (CT.enigmaPress(st, i, enCfg).out === i) selfOk = false;
+}
+check('字母永不加密成自身', selfOk);
+// 穷举初始位置
+const t0 = Date.now();
+let found = null, tried = 0, idx = 0;
+while (!found && idx < CT.ENIGMA_TOTAL) {
+  const r = CT.enigmaCrackBatch(enCipher, CT.SAMPLES.enigma.crib, enCfg, idx, 2048);
+  idx = r.next;
+  tried = r.tried;
+  if (r.found) found = r.found;
+}
+console.log('  穷举', tried, '种 →', found, `(${Date.now() - t0}ms)`);
+check('初始位置恢复为 [7,4,2]', found && found.join(',') === '7,4,2');
+check('穷举在合理时间内', Date.now() - t0 < 5000);
+
+console.log('— RSA —');
+check('模幂正确 65^17 mod 3233 = 2790', CT.modPow(65, 17, 3233).value === 2790);
+check('密钥自洽 e*d ≡ 1 (mod φ)', (CT.RSA_KEY.e * CT.RSA_KEY.d) % CT.RSA_KEY.phi === 1);
+check('p*q = n', CT.RSA_KEY.p * CT.RSA_KEY.q === CT.RSA_KEY.n);
+const rsaPlain = CT.SAMPLES.rsa.plain;
+const enc = CT.rsaEncrypt(rsaPlain, CT.RSA_KEY);
+console.log('  明文块:', enc.plainBlocks.join(','), '→ 密文块:', enc.cipherBlocks.join(','));
+const fact = CT.rsaFactor(CT.RSA_KEY.n);
+check('分解 n 得 61×53', fact.p * fact.q === 3233);
+const phi = fact.p * fact.q - fact.p - fact.q + 1; // φ = pq - p - q + 1
+const derivedD = CT.rsaDeriveD(CT.RSA_KEY.e, phi);
+check('推导私钥 d=2753', derivedD === 2753, 'got ' + derivedD);
+const dec = CT.rsaDecryptBlocks(enc.cipherBlocks, derivedD, 3233);
+check('RSA 加解密往返', dec.replace(/X+$/, '') === rsaPlain, dec);
+
 console.log(`\n结果: ${pass} 通过, ${fail} 失败`);
 process.exit(fail ? 1 : 0);

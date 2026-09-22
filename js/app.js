@@ -141,7 +141,8 @@
       canvas.style.display = 'none';
       return;
     }
-    var ctx = canvas.getContext && canvas.getContext('2d');
+    var ctx = null;
+    try { ctx = canvas.getContext && canvas.getContext('2d'); } catch (e) { ctx = null; }
     if (!ctx) { canvas.style.display = 'none'; return; } // 环境不支持 canvas 时优雅降级
     var glyphs = '01ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF0123456789￥¥#%&+=<>/\\';
     var fontSize = 14;
@@ -186,24 +187,61 @@
   /* ------------------------------------------------------------------ */
 
   function initNav() {
-    var links = $all('.site-nav a[href^="#"]');
+    var links = $all('.site-nav a[href^="#"], .act-rail a[href^="#"], .program__menu a[href^="#"]');
     if (!links.length || !('IntersectionObserver' in window)) return;
     var map = {};
     links.forEach(function (a) {
       var sec = document.querySelector(a.getAttribute('href'));
-      if (sec) map[sec.id] = a;
+      if (!sec) return;
+      (map[sec.id] = map[sec.id] || []).push(a);
     });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        var a = map[e.target.id];
-        if (!a) return;
+        var group = map[e.target.id];
+        if (!group) return;
         if (e.isIntersecting) {
           links.forEach(function (l) { l.classList.remove('is-current'); });
-          a.classList.add('is-current');
+          group.forEach(function (a) { a.classList.add('is-current'); });
         }
       });
     }, { rootMargin: '-40% 0px -55% 0px' });
     Object.keys(map).forEach(function (id) { io.observe(document.getElementById(id)); });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 节目单：右上角下拉（八幕扩容后的主导航）                              */
+  /* ------------------------------------------------------------------ */
+
+  var programBound = false;
+
+  function initProgram() {
+    var btn = document.getElementById('programBtn');
+    var menu = document.getElementById('programMenu');
+    if (!btn || !menu || programBound) return; // 幂等：防止 DOMContentLoaded 重复触发导致监听器叠挂
+    programBound = true;
+
+    function close() {
+      menu.hidden = true;
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+    function open() {
+      menu.hidden = false;
+      btn.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (menu.hidden) open(); else close();
+    });
+    document.addEventListener('click', function (e) {
+      if (!menu.hidden && !menu.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+    $all('a', menu).forEach(function (a) { a.addEventListener('click', close); });
   }
 
   /* ------------------------------------------------------------------ */
@@ -222,8 +260,12 @@
     var map = {
       frequency: '#act-frequency',
       caesar: '#act-caesar',
+      substitution: '#act-substitution',
       vigenere: '#act-vigenere',
-      xor: '#act-xor'
+      rail: '#act-rail',
+      enigma: '#act-enigma',
+      xor: '#act-xor',
+      rsa: '#act-rsa'
     };
     var target = map[act];
     if (!target) return;
@@ -276,10 +318,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    initMatrix();
-    initNav();
-    initFooter();
-    initShare();
+    // 每个初始化互相隔离：单点失败（如 canvas 不可用）不能拖垮节目单等其余功能
+    [initMatrix, initNav, initProgram, initFooter, initShare].forEach(function (fn) {
+      try { fn(); } catch (e) { /* noop */ }
+    });
     setTimeout(initDeepLink, 100);
   });
 })(window);

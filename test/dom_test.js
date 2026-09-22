@@ -1,4 +1,4 @@
-/* DOM 集成测试：在 jsdom 中加载 index.html 并模拟四幕完整交互 */
+/* DOM 集成测试：在 jsdom 中加载 index.html 并模拟八幕完整交互 */
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
@@ -30,7 +30,8 @@ async function main() {
   const errors = [];
   window.addEventListener('error', e => errors.push(e.message || String(e.error)));
 
-  for (const f of ['js/core.js', 'js/app.js', 'js/frequency.js', 'js/caesar.js', 'js/vigenere.js', 'js/xor.js']) {
+  for (const f of ['js/core.js', 'js/app.js', 'js/frequency.js', 'js/caesar.js', 'js/substitution.js',
+    'js/vigenere.js', 'js/rail.js', 'js/enigma.js', 'js/xor.js', 'js/rsa.js']) {
     try { window.eval(read(f)); } catch (e) { errors.push(f + ': ' + e.message); }
   }
   document.dispatchEvent(new window.Event('DOMContentLoaded', { bubbles: true }));
@@ -39,6 +40,18 @@ async function main() {
 
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
+
+  /* ---- 节目单 + 右缘导轨（八幕扩容的导航） ---- */
+  console.log('— 节目单 / 导轨 —');
+  $('#programBtn').click();
+  ok(!$('#programMenu').hidden, '节目单打开');
+  ok($('#programBtn').getAttribute('aria-expanded') === 'true', 'aria-expanded=true');
+  ok($$('#programMenu a[href^="#"]').length === 8, `节目单收录 8 幕（${$$('#programMenu a[href^="#"]').length}）`);
+  $('#programBtn').click();
+  ok($('#programMenu').hidden, '节目单关闭');
+  ok($$('.act-rail a').length === 8, '右缘导轨 8 个幕次');
+  ok($$('section.act:not(.act--teaser) .act__num').length === 8,
+    `8 个幕号（${$$('section.act:not(.act--teaser) .act__num').length}）`);
 
   /* ---- 第 I 幕 频率分析 ---- */
   console.log('— 第 I 幕 —');
@@ -73,8 +86,22 @@ async function main() {
   // 霓虹闪烁触发
   ok($('#neon-flash') !== null, '霓虹闪烁元素存在');
 
-  /* ---- 第 III 幕 维吉尼亚 ---- */
-  console.log('— 第 III 幕 —');
+  /* ---- 第 III 幕 单表替换 ---- */
+  console.log('— 第 III 幕 单表替换 —');
+  $('#substCrack').click();
+  await sleep(300);
+  ok($('#substStatus').textContent.length > 4, '替换状态推进: ' + $('#substStatus').textContent.slice(0, 40));
+  await sleep(2400);
+  ok($$('#substMap .subst-card.is-flipped').length === 26,
+    `26 张映射卡全部翻转（${$$('#substMap .subst-card.is-flipped').length}）`);
+  ok($('#substResult').classList.contains('is-visible'), '替换结果面板可见');
+  ok($('#substStatus').classList.contains('is-done'), '替换状态=完成');
+  await sleep(900);
+  ok($('#substPlain').textContent.includes('MOUNTAIN'), '替换明文还原: ' + $('#substPlain').textContent.slice(0, 44));
+  ok($('#substHits').textContent.includes('MOUNTAIN') || $('#substHits').textContent.includes('常见词'), '替换常见词命中展示');
+
+  /* ---- 第 IV 幕 维吉尼亚 ---- */
+  console.log('— 第 IV 幕 维吉尼亚 —');
   $('#vigCrack').click();
   await sleep(400);
   ok($$('#vigIC .ic-bar').length === 12, 'IC 图 12 档');
@@ -89,8 +116,35 @@ async function main() {
   ok($('#vigKey').textContent.replace(/\s/g, '') === 'CIPHER', '解出密钥: ' + $('#vigKey').textContent);
   ok($('#vigPlain').textContent.includes('CODEBREAKING'), '维吉尼亚明文正确');
 
-  /* ---- 第 IV 幕 XOR ---- */
-  console.log('— 第 IV 幕 —');
+  /* ---- 第 V 幕 栅栏 ---- */
+  console.log('— 第 V 幕 栅栏 —');
+  $('#railCrack').click();
+  await sleep(400);
+  ok($$('#railGrid .rail-cell').length > 0, '栅栏网格已铺');
+  await sleep(2400);
+  ok($$('#railRows .caesar-row').length === 7, `7 个栏数候选（${$$('#railRows .caesar-row').length}）`);
+  ok($$('#railRows .caesar-row.is-winner').length === 1, '胜出栏数唯一高亮');
+  ok($('#railStatus').classList.contains('is-done'), '栅栏状态=完成: ' + $('#railStatus').textContent);
+  ok($('#railWin').textContent === '4', '胜出栏数=4: ' + $('#railWin').textContent);
+  ok($('#railResult').classList.contains('is-visible'), '栅栏结果面板可见');
+  await sleep(1200);
+  ok($('#railPlain').textContent.includes('SECRET'), '栅栏明文还原: ' + $('#railPlain').textContent.slice(0, 44));
+
+  /* ---- 第 VI 幕 恩尼格玛 ---- */
+  console.log('— 第 VI 幕 恩尼格玛 —');
+  $('#enigmaAttack').click();
+  await sleep(500);
+  ok(Number($('#enigmaTried').textContent.replace(/,/g, '')) > 0, '穷举计数器推进: ' + $('#enigmaTried').textContent);
+  await sleep(1800);
+  ok($$('#enigmaRotors .enigma-rotor.is-locked').length === 3, '三只转子窗锁定');
+  ok($('#enigmaPos').textContent.replace(/\s/g, '') === 'HEC', '起手位置 HEC: ' + $('#enigmaPos').textContent);
+  ok($('#enigmaStatus').classList.contains('is-done'), '恩尼格玛状态=完成');
+  ok($('#enigmaResult').classList.contains('is-visible'), '恩尼格玛结果面板可见');
+  await sleep(1500);
+  ok($('#enigmaPlain').textContent.includes('WEATHER'), '恩尼格玛明文还原: ' + $('#enigmaPlain').textContent.slice(0, 44));
+
+  /* ---- 第 VII 幕 XOR ---- */
+  console.log('— 第 VII 幕 XOR —');
   $('#xorRun').click();
   await sleep(400);
   ok($$('#xorStream .bit-row').length === 3, '三行比特流');
@@ -105,6 +159,31 @@ async function main() {
   await sleep(3000);
   ok($$('#xorSteps .attack-step').length === 3, '攻击三步骤展示');
   ok($('#xorKeyReveal').textContent.includes('SECRET'), '密钥恢复: ' + $('#xorKeyReveal').textContent);
+
+  /* ---- 第 VIII 幕 RSA ---- */
+  console.log('— 第 VIII 幕 RSA —');
+  $('#rsaEncrypt').click();
+  await sleep(1400);
+  ok($('#rsaMBlocks').textContent.includes('316'), '明文块生成: ' + $('#rsaMBlocks').textContent);
+  ok($('#rsaCBlocks').textContent.includes('2329'), '密文块生成: ' + $('#rsaCBlocks').textContent);
+  ok($$('#rsaSteps .rsa-step-line').length >= 8, `模幂分步展示（${$$('#rsaSteps .rsa-step-line').length} 行）`);
+  ok($('#rsaStatus').textContent.includes('加密完成'), 'RSA 加密状态完成');
+  ok($('#rsaPrivate').classList.contains('is-locked'), '私钥卡初始锁定');
+  ok($('#rsaDecrypt').disabled, '解密按钮初始禁用');
+
+  $('#rsaAttack').click();
+  await sleep(3400);
+  const factorRows = $$('#rsaFactorRows .rsa-factor-row');
+  ok(factorRows.length >= 20, `试除过程展示（${factorRows.length} 行）`);
+  ok($$('#rsaFactorRows .rsa-factor-row.is-hit').length === 1, '命中行唯一');
+  ok(!$('#rsaPrivate').classList.contains('is-locked'), '私钥卡解锁');
+  ok($('#rsaD').textContent.includes('2753'), '私钥 d=2753 反推: ' + $('#rsaD').textContent);
+  ok(!$('#rsaDecrypt').disabled, '解密按钮启用');
+
+  $('#rsaDecrypt').click();
+  await sleep(1500);
+  ok($('#rsaResult').classList.contains('is-visible'), 'RSA 结果面板可见');
+  ok($('#rsaPlain').textContent.includes('MEETMEATDAWN'), 'RSA 明文还原: ' + $('#rsaPlain').textContent.slice(0, 30));
 
   /* ---- 深链（文章回链） ---- */
   console.log('— 深链 —');
