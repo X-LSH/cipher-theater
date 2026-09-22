@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>把锁和钥匙分家的三个人：RSA 与公钥加密 · 密码剧场</title>
+  <meta name="description" content="1977 年 MIT 三人把「锁公开、钥匙保密」变成现实：乘回来很难是它的全部赌注。RSA-129 的咒语、Shor 的量子算法与 2048 位的今昔。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <div class="site-nav">
+      <a href="../articles.html">冷知识</a>
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="../index.html#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="../index.html#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="../index.html#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="../index.html#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="../index.html#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="../index.html#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="../index.html#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="../index.html#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="../articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>七篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">RSA · 公钥加密</span>
+      <span>约 4 分钟</span>
+      <span>难度：进阶</span>
+    </div>
+
+    <h1 class="article-title">把锁和钥匙分家的三个人</h1>
+
+    <p class="article-lead">
+      前七幕的所有密码都有同一个软肋：钥匙必须先送到对方手里。
+      RSA 把这个死结一刀两断——锁大张旗鼓地公开，
+      你把它挂上门，全世界都能上锁，只有握着钥匙的人能开。
+    </p>
+
+    <div class="article-body">
+      <h2>1977 年，MIT 的三个年轻人</h2>
+      <p>
+        1976 年，迪菲与赫尔曼发表了《密码学的新方向》，第一次把「公钥」的思想摆上台面：
+        加密和解密可以使用两把不同的钥匙，公开其中一把毫无关系。
+        一年后，MIT 的三位年轻人<strong>里维斯特、沙米尔、阿德莱曼</strong>把蓝图变成了能跑的算法——
+        用他们姓氏的首字母，命名了 <strong>RSA</strong>。
+        在此之前，密码学是「谁拿到了钥匙」的问题；在此之后，它变成了「谁算得动一道数学题」。
+      </p>
+
+      <h2>一个只有除法能解开的死结</h2>
+      <p>
+        RSA 的地基是一对不对等的运算：<strong>把两个质数乘起来，小学生都会；把一个大数拆回两个质数，全世界一起算也要算到天荒地老</strong>。
+        剧场里的玩具密钥 <code>n = 3233</code>，乘出来是 <code>53 × 61</code>——拆开它只是一道小学题，
+        但前提是有人大声告诉你答案。现实中的一次握手里，n 有<strong>617 位十进制数字</strong>，
+        拆开它的最好办法，依然是从 2 开始一路除下去。
+      </p>
+
+      <p>
+        加密与解密则像在一圈数字钟面上跳格子：用公钥指数 <code>e</code> 做模幂是<strong>顺着跳</strong>，
+        用私钥指数 <code>d</code> 是<strong>倒着跳回原点</strong>——而 <code>d</code> 的存在性与算法，
+        需要先知道 n 的分解（欧拉定理给这场「跳回去」盖了章）。
+        所以：<strong>能分解 n 的人，就能当场推导出私钥</strong>。
+        第 VIII 幕的攻击面板，就是让你亲手把这行推导跑一遍。
+      </p>
+
+      <div class="pull-quote">
+        RSA 抵押的全部家当：<br>
+        乘起来很容易，乘回来很难——到目前为止，全世界的计算机都同意这一点。
+      </div>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li><strong>一条被破译的咒语</strong>：1990 年 RSA 公司悬赏破译 425 位的「RSA-129」密文，四年后由 600 多台联网计算机合力解开——明文是一句无厘头咒语：<code>The magic words are SQUEAMISH OSSIFRAGE</code>（那神奇的咒语是「矫揉做作的红嘴鸢」）。</li>
+          <li><strong>死刑判决书早就写好了</strong>：1994 年，贝尔实验室的彼得·肖尔提出量子计算机上的多项式时间分解算法——大整数分解从此有了「量子死刑」。只是行刑用的量子计算机，离能瓦解 2048 位还差着<strong>数百万个逻辑量子比特</strong>。</li>
+          <li><strong>接班人已经上岗</strong>：2024 年 8 月，美国 NIST 正式发布首批后量子密码标准（FIPS 203/204/205）——全世界正在给 RSA 备好「量子时代之后」的替身，互联网的换代已经悄悄开始。</li>
+        </ul>
+      </div>
+
+      <h2>3233 很好拆，那 617 位呢</h2>
+      <p>
+        剧场第 VIII 幕里，试除法 29 行就把 3233 拆开、把 <code>d = 2753</code> 当场反推出来——
+        因为它是<strong>玩具</strong>。真实 RSA 的安全感来自量级：
+        2048 位的 n，就算把地球上所有算力捆在一起，经典计算机也要算上<strong>宇宙年龄级别</strong>的时间。
+        这场攻防的本质是<strong>时间差</strong>：不是「不可破解」，而是「破解它比等死还长」。
+      </p>
+
+      <p class="dim">
+        顺带一提：RSA 的安全性赌的是「分解很难」，而第 VII 幕的一次一密赌的是「密钥不复用」——
+        七幕下来你会发现，密码学从不承诺「绝对」，它只承诺
+        <strong>把攻击者的成本抬到高于情报的价值</strong>。唯一敢说「绝对」的一次一密，代价是密钥比明文还难伺候。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>明文是 <code>MEET ME AT DAWN</code>——先点「公钥加密」看密文块逐块弹出，再点「发起分解」夺走私钥，最后用它解密。</p>
+        <a class="btn btn--neon" href="../index.html?act=rsa&amp;text=MEETMEATDAWN&amp;note=%E6%98%8E%E6%96%87%20MEET%20ME%20AT%20DAWN%E2%80%94%E2%80%94%E5%85%88%E7%82%B9%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%EF%BC%8C%E5%86%8D%E7%82%B9%E5%8F%91%E8%B5%B7%E5%88%86%E8%A7%A3%E5%A4%BA%E8%B5%B0%E7%A7%81%E9%92%A5%EF%BC%8C%E6%9C%80%E5%90%8E%E8%A7%A3%E5%AF%86#act-rsa">▶ 去第 VIII 幕夺私钥</a>
+      </div>
+
+      <h2>你其实一直在用它</h2>
+      <p>
+        每次浏览器地址栏亮起小锁，背后都有一场公钥协商在发生；
+        每次扫码支付，都有一串模幂在跳格子。
+        RSA 和它的继任者们安静地待在协议栈底层——
+        而它们全部的底气，只是一道小学乘除题的<strong>不对称</strong>。
+      </p>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>考考朋友：「加密方法完全公开，为什么还安全？」——RSA：公开得越彻底，才越安全。</p>
+      <div class="article-next">
+        <a href="caesar.html"><small>回到开头</small><b>为什么凯撒偏偏是 +3</b></a>
+        <a href="../articles.html"><small>全部冷知识</small><b>七篇一览</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

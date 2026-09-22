@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>26 个字母全洗牌，为什么还是被数了出来：单表替换 · 密码剧场</title>
+  <meta name="description" content="单表替换有 4×10²⁶ 种密钥，穷举要花上宇宙年龄；但只要 E 的习惯改不掉，频次一数就破。福尔摩斯的跳舞小人正是如此。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <div class="site-nav">
+      <a href="../articles.html">冷知识</a>
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="../index.html#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="../index.html#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="../index.html#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="../index.html#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="../index.html#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="../index.html#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="../index.html#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="../index.html#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="../articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>七篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">单表替换 · SUBSTITUTION</span>
+      <span>约 3 分钟</span>
+      <span>难度：进阶</span>
+    </div>
+
+    <h1 class="article-title">26 个字母全洗牌，为什么还是被数了出来</h1>
+
+    <p class="article-lead">
+      单表替换把整个字母表彻底洗牌：不是平移 3 格，而是给每个字母都起个新名字。
+      密钥多到写满一张纸都列不完——可它输掉的方式非常平庸：
+      名字改了，习惯没改。
+    </p>
+
+    <div class="article-body">
+      <h2>把字母表洗牌，能洗出多少种？</h2>
+      <p>
+        凯撒密码只有 25 种可能，数到天亮就穷尽了。单表替换则是 <strong>26 个字母的全排列</strong>：
+        26! ≈ <strong>4×10²⁶</strong> 种。假设一台计算机每秒试一亿种，
+        把它们全试完需要的时间，远远超过宇宙至今的年龄——
+        从这个角度看，它几乎是「理论上不可能破解」的。
+      </p>
+
+      <div class="pull-quote">
+        敌人不需要试遍 4×10²⁶ 种可能；<br>
+        他们只需要数一数 E 出现了几次。
+      </div>
+
+      <h2>一次「数数」引发的千年悬案</h2>
+      <p>
+        9 世纪的巴格达，学者<strong>阿尔·金迪</strong>发现了那个致命的漏洞：
+        无论字母被换成什么，<strong>使用习惯原封不动</strong>。
+        英语里 E 永远最常见、<code>THE</code> 永远最高频——单表替换只是把 E 改名叫 X，
+        于是 X 在密文里也永远最常见。把密文的字母频次排个名，
+        再和英语标准谱一对照，最常见的密文字母对应 E，次常见的对应 T……
+        <strong>4×10²⁶ 道门里，直接走对了一半</strong>。
+        这就是我们在第 I 幕柱状谱上看到的东西——只不过那篇文章里提过，
+        这套算法让凯撒密码「安全」了八个世纪。
+      </p>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li><strong>玛丽·斯图亚特的密信（1586）</strong>：苏格兰女王玛丽用单表替换与同谋串通营救——破译者托马斯·费利佩斯不仅译出了信，还<strong>在信尾添了句附言</strong>骗她回信。回信成了铁证，次年她被斩首。单表替换史上最著名的翻车，翻在「回信」上。</li>
+          <li><strong>猪圈密码</strong>：18 世纪共济会用一套几何符号替代字母，据说美国内战的士兵也拿它给家里写信——符号再怪，本质仍是 26 个字母换马甲，统计特征一件不少。</li>
+          <li><strong>《跳舞的小人》（1903）</strong>：柯南·道尔笔下的福尔摩斯对着满纸小人做的第一件事，就是<strong>数哪个小人出现最多</strong>——文学名场面，其实是频率分析的标准操作。</li>
+        </ul>
+      </div>
+
+      <h2>「几乎解开」不算解开：爬山与最后几张卡</h2>
+      <p>
+        有个残酷的数学事实：如果评分标准<strong>只看单个字母的频率</strong>，
+        那么「按出现次数排序」就是理论最优——永远差那么几口气，错几个字母，整段话就卡在「似懂非懂」的边缘。
+        要冲过终点，必须引入<strong>上下文</strong>：相邻字母对（bigram）的统计规律告诉你 <code>TH</code>、<code>HE</code>、<code>IN</code> 才像英语；
+        再叠加常见词命中（<code>THE</code>、<code>AND</code>、<code>VALLEY</code>……），每猜对一个词就给评分加一笔奖励。
+        剧场第 III 幕的破译台干的就是这件事：26 张映射卡先被频次翻对大半，
+        再由上下文和词分一张张修正、锁死，直到没有一张卡需要再动。
+      </p>
+
+      <p class="dim">
+        这也是「密码学进入统计时代」的起点：从此攻防不再比谁的密钥更难猜，
+        而是谁泄露的语言习惯更少。第 IV 幕的维吉尼亚之所以能多撑三百年，
+        正因为它用多个字母表轮换，把频率的峰谷<strong>抹平了</strong>。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>把这段关键词替换密文丢进第 III 幕，看 26 张卡先按频次翻对大半，再被上下文逐张修正到完全归位。</p>
+        <a class="btn btn--neon" href="../index.html?act=substitution&amp;text=QAO%20FIBDAQ%20WJOP%20IJQ%20NOHOHEON%20QAO%20UBZKNW%20KIW%20QAO%20UBIW%20RJNDOQP%20QAO%20IKHO%20JR%20QAO%20QNOO%20ESQ%20QAO%20TKGGOX%20FOOLP%20OTONX%20POYNOQ&amp;note=%E5%85%B3%E9%94%AE%E8%AF%8D%E5%AD%97%E6%AF%8D%E8%A1%A8%E7%9A%84%E6%9B%BF%E6%8D%A2%E5%AF%86%E6%96%87%E2%80%94%E2%80%94%E7%9C%8B%E9%A2%91%E6%AC%A1%E5%85%88%E7%BF%BB%E5%AF%B9%E4%B8%80%E5%8D%8A%EF%BC%8C%E5%86%8D%E8%AE%A9%20bigram%20%E4%B8%8E%E5%B8%B8%E8%A7%81%E8%AF%8D%E6%8A%8A%E6%9C%80%E5%90%8E%E5%87%A0%E5%BC%A0%E5%8D%A1%E9%94%81%E6%AD%BB#act-substitution">▶ 去第 III 幕翻牌</a>
+      </div>
+
+      <h2>给现代人的一点安慰</h2>
+      <p>
+        单表替换并没有真正退场：报字游戏、儿童锁、桌游里的「密码本」，
+        用的都是它的变体。它唯一的要求是别当真——
+        毕竟连 1903 年的侦探都知道，<strong>要破它，数数就够了</strong>。
+      </p>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>考考朋友：「我把 26 个字母全部随机换掉，为什么还是被秒破？」——因为改名改不掉习惯。</p>
+      <div class="article-next">
+        <a href="vigenere.html"><small>下一篇</small><b>毁于藏头诗的「不可破译密码」</b></a>
+        <a href="../index.html#act-substitution"><small>回剧场</small><b>看 26 张映射卡翻转归位</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

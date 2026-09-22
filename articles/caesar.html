@@ -14,13 +14,28 @@
 
   <header class="site-header">
     <a class="logo" href="../index.html">密码<span>剧场</span></a>
-    <nav class="site-nav">
-      <a href="../index.html#act-frequency">频率分析</a>
-      <a href="../index.html#act-caesar">凯撒</a>
-      <a href="../index.html#act-vigenere">维吉尼亚</a>
-      <a href="../index.html#act-xor">XOR</a>
+    <div class="site-nav">
       <a href="../articles.html">冷知识</a>
-    </nav>
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="../index.html#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="../index.html#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="../index.html#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="../index.html#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="../index.html#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="../index.html#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="../index.html#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="../index.html#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="../articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>七篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
   </header>
 
   <article class="article-wrap">
@@ -96,7 +111,7 @@
       <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
       <p>觉得有意思？转给那个总爱给你发「密码消息」的朋友。</p>
       <div class="article-next">
-        <a href="vigenere.html"><small>下一篇</small><b>毁于藏头诗的「不可破译密码」</b></a>
+        <a href="substitution.html"><small>下一篇</small><b>26 个字母全洗牌，为什么还是被数了出来</b></a>
         <a href="../index.html#act-frequency"><small>回剧场</small><b>看频率分析柱状谱亮起</b></a>
       </div>
     </div>

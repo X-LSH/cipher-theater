@@ -271,7 +271,8 @@
     if (!target) return;
 
     if (text) {
-      var input = document.querySelector(target + ' textarea');
+      var input = document.querySelector(target + ' textarea') ||
+                  document.querySelector(target + ' input[type="text"]');
       if (input) {
         input.value = text;
         if (note) showNote(target, note);

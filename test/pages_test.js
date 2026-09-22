@@ -11,12 +11,15 @@ let pass = 0, fail = 0;
 function ok(c, msg) { c ? pass++ : (fail++, console.log('  FAIL ' + msg)); }
 
 const PAGES = [
-  { file: 'index.html', scripts: ['js/core.js', 'js/app.js', 'js/frequency.js', 'js/caesar.js', 'js/vigenere.js', 'js/xor.js'], check: '#act-xor' },
+  { file: 'index.html', scripts: ['js/core.js', 'js/app.js', 'js/frequency.js', 'js/caesar.js', 'js/substitution.js', 'js/vigenere.js', 'js/rail.js', 'js/enigma.js', 'js/xor.js', 'js/rsa.js'], check: '#act-rsa' },
   { file: 'articles.html', scripts: ['js/core.js', 'js/app.js'], check: '.card-grid .card' },
   { file: 'articles/caesar.html', scripts: ['js/core.js', 'js/app.js'], check: '.fact-box' },
+  { file: 'articles/substitution.html', scripts: ['js/core.js', 'js/app.js'], check: '.pull-quote' },
   { file: 'articles/vigenere.html', scripts: ['js/core.js', 'js/app.js'], check: '.pull-quote' },
+  { file: 'articles/rail.html', scripts: ['js/core.js', 'js/app.js'], check: '.fact-box' },
   { file: 'articles/enigma.html', scripts: ['js/core.js', 'js/app.js'], check: '.fact-box' },
-  { file: 'articles/otp.html', scripts: ['js/core.js', 'js/app.js'], check: '.article-cta' }
+  { file: 'articles/otp.html', scripts: ['js/core.js', 'js/app.js'], check: '.article-cta' },
+  { file: 'articles/rsa.html', scripts: ['js/core.js', 'js/app.js'], check: '.pull-quote' }
 ];
 
 (async () => {

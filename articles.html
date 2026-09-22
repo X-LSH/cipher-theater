@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>冷知识 · 密码剧场</title>
-  <meta name="description" content="四篇三分钟密码学冷知识短文：凯撒的+3、毁于藏头诗的维吉尼亚、恩尼格玛与波兰三杰、唯一被证明绝对安全的一次性密码本。">
+  <meta name="description" content="七篇三分钟密码学冷知识：凯撒的+3、单表替换与频率指纹、毁于藏头诗的维吉尼亚、栅栏转置、恩尼格玛与波兰三杰、唯一被证明绝对安全的一次性密码本、RSA 公钥与分解赌局。">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,13 +14,28 @@
 
   <header class="site-header">
     <a class="logo" href="index.html">密码<span>剧场</span></a>
-    <nav class="site-nav">
-      <a href="index.html#act-frequency">频率分析</a>
-      <a href="index.html#act-caesar">凯撒</a>
-      <a href="index.html#act-vigenere">维吉尼亚</a>
-      <a href="index.html#act-xor">XOR</a>
+    <div class="site-nav">
       <a href="articles.html" class="is-current">冷知识</a>
-    </nav>
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="index.html#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="index.html#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="index.html#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="index.html#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="index.html#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="index.html#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="index.html#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="index.html#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>七篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="article-list-head">
@@ -37,10 +52,22 @@
         <p>凯撒密码的偏移量藏着他名字里的字母间距；而破解它的算法，比凯撒本人晚出生了约 800 年。</p>
         <span class="card__more">阅读 → 约 3 分钟</span>
       </a>
+      <a class="card" href="articles/substitution.html">
+        <span class="card__tag">单表替换</span>
+        <h3>26 个字母全洗牌，为什么还是被数了出来</h3>
+        <p>密钥多到穷举要花宇宙年龄，却输给了最平庸的一件事：数一数 E 出现了几次。</p>
+        <span class="card__more">阅读 → 约 3 分钟</span>
+      </a>
       <a class="card" href="articles/vigenere.html">
         <span class="card__tag">维吉尼亚 · Vigenère</span>
         <h3>毁于一首藏头诗的「不可破译密码」</h3>
         <p>号称数学无法攻破、悬赏十年无人领取。最后让后人顺藤摸瓜的，是某位破译者写给朋友的句首字母。</p>
+        <span class="card__more">阅读 → 约 3 分钟</span>
+      </a>
+      <a class="card" href="articles/rail.html">
+        <span class="card__tag">栅栏密码</span>
+        <h3>一个字母都懒得改的密码</h3>
+        <p>不换字母只换位置，频率分析对着完美英语谱一无所获——从斯巴达木棍数到一战 ADFGVX。</p>
         <span class="card__more">阅读 → 约 3 分钟</span>
       </a>
       <a class="card" href="articles/enigma.html">
@@ -54,6 +81,12 @@
         <h3>唯一被数学证明「绝对安全」的加密</h3>
         <p>密钥和明文一样长、真随机、只用一次——满足三个条件就无敌。代价是：管理密钥比制造密文难得多。</p>
         <span class="card__more">阅读 → 约 3 分钟</span>
+      </a>
+      <a class="card" href="articles/rsa.html">
+        <span class="card__tag">RSA</span>
+        <h3>把锁和钥匙分家的三个人</h3>
+        <p>乘起来很容易，乘回来很难——1977 年的三个年轻人把这场赌局变成了每次网购的底层。</p>
+        <span class="card__more">阅读 → 约 4 分钟</span>
       </a>
     </div>
 

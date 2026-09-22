@@ -23,12 +23,15 @@
 
 ## 📚 冷知识文章
 
-配套四篇中文科普短文（`/articles/`），每篇都带有「回剧场试试」深链按钮，可携带样例密文直接跳转到对应破译台：
+配套七篇中文科普短文（`/articles/`），每篇都带有「回剧场试试」深链按钮，可携带样例密文直接跳转到对应破译台：
 
 - [为什么凯撒密码偏偏是 +3？](articles/caesar.html)
+- [26 个字母全洗牌，为什么还是被数了出来](articles/substitution.html)
 - [毁于一首藏头诗的「不可破译密码」](articles/vigenere.html)
+- [一个字母都懒得改的密码](articles/rail.html)
 - [恩尼格玛：让波兰在沦陷前就破译了它](articles/enigma.html)
 - [唯一被数学证明「绝对安全」的加密](articles/otp.html)
+- [把锁和钥匙分家的三个人](articles/rsa.html)
 
 ## 🛠 技术
 
@@ -55,13 +58,14 @@ python -m http.server 8000
 ```bash
 npm i --no-save jsdom        # 仅测试依赖，不进仓库
 node test/selftest.js        # 密码学算法自测（30 项）
-node test/static_check.js    # ID/路径一致性（172 项）
+node test/static_check.js    # ID/路径一致性（203 项）
 node test/dom_test.js        # jsdom 模拟八幕完整交互（70 项）
-node test/pages_test.js      # 全部页面烟雾测试（24 项）
+node test/pages_test.js      # 全部页面烟雾测试（36 项）
+node test/link_check.js      # 站内链接与节目单完整性（177 项）
 node test/serve.js 4173      # 本地预览服务器
 ```
 
-合计 296 项检查全部通过。
+合计 516 项检查全部通过。
 
 ## 📦 部署（GitHub Pages）
 

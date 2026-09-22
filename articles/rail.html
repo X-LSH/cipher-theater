@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一个字母都懒得改的密码：栅栏密码 · 密码剧场</title>
+  <meta name="description" content="栅栏密码不换字母只换位置：频率分析对着完美英语谱一无所获，破译只能靠穷举栏数——从斯巴达木棍到一战 ADFGVX，换位置这招古老又长寿。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <div class="site-nav">
+      <a href="../articles.html">冷知识</a>
+      <div class="program">
+        <button id="programBtn" class="program__btn" type="button"
+                aria-expanded="false" aria-controls="programMenu">
+          <span class="program__glyph" aria-hidden="true">☰</span> 节目单
+        </button>
+        <div id="programMenu" class="program__menu" hidden>
+          <p class="program__title">今晚的节目 <span>NOW SHOWING</span></p>
+          <a href="../index.html#act-frequency"><b>Ⅰ</b><span><strong>频率分析</strong><small>语言的指纹 · 柱状谱</small></span></a>
+          <a href="../index.html#act-caesar"><b>Ⅱ</b><span><strong>凯撒密码</strong><small>罗盘旋转穷举 25 格</small></span></a>
+          <a href="../index.html#act-substitution"><b>Ⅲ</b><span><strong>单表替换</strong><small>26 张映射卡翻转归位</small></span></a>
+          <a href="../index.html#act-vigenere"><b>Ⅳ</b><span><strong>维吉尼亚</strong><small>密钥逐位旋转归位</small></span></a>
+          <a href="../index.html#act-rail"><b>Ⅴ</b><span><strong>栅栏密码</strong><small>之字穿行 · 栏数穷举</small></span></a>
+          <a href="../index.html#act-enigma"><b>Ⅵ</b><span><strong>恩尼格玛</strong><small>转子旋转 · 17576 穷举</small></span></a>
+          <a href="../index.html#act-xor"><b>Ⅶ</b><span><strong>XOR 流密码</strong><small>比特流滚动解体</small></span></a>
+          <a href="../index.html#act-rsa"><b>Ⅷ</b><span><strong>RSA</strong><small>公钥加密 · 分解攻击</small></span></a>
+          <hr class="program__divider">
+          <a href="../articles.html"><b>✦</b><span><strong>冷知识专栏</strong><small>七篇三分钟短文</small></span></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">栅栏密码 · RAIL FENCE</span>
+      <span>约 3 分钟</span>
+      <span>难度：入门</span>
+    </div>
+
+    <h1 class="article-title">一个字母都懒得改的密码</h1>
+
+    <p class="article-lead">
+      有一种密码连字母表都懒得碰：它一个字都不改，只把顺序打乱。
+      统计特征原封不动，你却照样读不通一句话——直到你数对了栅栏的根数。
+    </p>
+
+    <div class="article-body">
+      <h2>之字形：把句子写成栅栏</h2>
+      <p>
+        栅栏密码属于<strong>转置密码</strong>（transposition）：明文照着<strong>之字形</strong>的路线依次写进 N 条「栏」，
+        再一行行读出来就是密文。以 2 栏写 <code>THE SECRET</code>：
+        先斜着写下排、再斜着折回上排，第一栏收走 <code>TSESRT</code>，第二栏收走 <code>H ECR E</code>——
+        字母一个没少，顺序全乱了。栏数就是全部的密钥，名字朴素得像它的原理：
+        铺开后像一道之字交叉的栅栏，因此得名。
+      </p>
+
+      <div class="pull-quote">
+        凯撒让 E 改名叫 X，栅栏只让 E 挪了个座位——<br>
+        于是频率分析对着一张完美英语谱，一无所获。
+      </div>
+
+      <h2>频率分析为什么失灵</h2>
+      <p>
+        转置密码<strong>不改变任何字母</strong>：密文里 E 还是那么多，<code>THE</code> 的三个字母还在一起——
+        只是中间被塞进了别的字母。对它跑一遍第 I 幕的柱状谱？
+        你会得到一张标准得不能再标准的英语频次图，然后陷入沉思：
+        谱是对的，话是读不出来的。
+        连第 IV 幕测维吉尼亚密钥长度用的<strong>重合指数</strong>也纹丝不动——
+        字母的「重合概率」压根就没被打乱。
+      </p>
+
+      <p>
+        破译它靠的不是统计，而是<strong>穷举</strong>：现实中人们用的栏数极少，
+        2 到 8 栏几乎覆盖一切。把每个候选栏数都试排一遍，
+        用评分函数给每种还原打分——最高分者胜出，这正是剧场第 V 幕做的事。
+        候选只有几个，几毫秒就分出胜负。
+      </p>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li><strong>斯巴达天书（约公元前 5 世纪）</strong>：斯巴达人把羊皮条缠在一根木棍上书写，字沿木棍长度排开——绳子一解，字母顺序就散了。这是最早有据可查的转置密码，动的也是「位置」。</li>
+          <li><strong>一战的 ADFGVX 密码（1918）</strong>：德军用六字母打头，再经<strong>列换位</strong>把字母彻底洗牌，一度让法军束手无策——最终被乔治·潘万靠对照多份截获电报破出。换位置这招，一千年后还在战场当主角。</li>
+          <li><strong>现代密码内部全是换位</strong>：AES 的 <code>ShiftRows</code>、DES 的 P 盒……今天每次网购的加密算法内部，都有一步「只挪位置不换字母」——它早已升格为标准零件。</li>
+        </ul>
+      </div>
+
+      <p class="dim">
+        顺带一提：正因为只换位置，转置密码和替换密码是<strong>两种不同的病</strong>——
+        第 III 幕靠统计破局，第 V 幕统计全废、只能硬试。
+        聪明的密码设计者很快想到：把两种病混在一起治，会怎样？
+        于是有了「替换 + 转置」的组合密码，也逼出了第 IV 幕那套更聪明的统计学。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>这段密文用 5 栏栅栏写成——字母一个没少，只是换了座位。丢进第 V 幕，看 2~8 栏逐一试排后谁得分最高。</p>
+        <a class="btn btn--neon" href="../index.html?act=rail&amp;text=TET%20LBH%20EHRTO%20NI%20E%20UTERTEPEC%20NHENETST%20%20EHK%20EI%20ID%20HTR%20NODE%20SSDTEIRY&amp;note=%E4%B9%8B%E5%AD%97%E5%BD%A2%205%20%E6%A0%8F%E8%BD%AC%E7%BD%AE%E5%AF%86%E6%96%87%E2%80%94%E2%80%94%E5%AD%97%E6%AF%8D%E4%B8%80%E4%B8%AA%E6%B2%A1%E5%B0%91%EF%BC%8C%E5%8F%AA%E6%98%AF%E6%8D%A2%E4%BA%86%E5%BA%A7%E4%BD%8D%EF%BC%8C%E7%AD%89%202~8%20%E6%A0%8F%E9%80%90%E4%B8%80%E8%AF%95%E6%8E%92#act-rail">▶ 去第 V 幕数栅栏</a>
+      </div>
+
+      <h2>它到底泄露了什么</h2>
+      <p>
+        栏数太少，是转置密码的死穴：候选就那么几个，穷举成本低到可以忽略。
+        但「只换位置」的思想并没有死——现代密码学会了把它做成<strong>固定且公开的置换步骤</strong>，
+        重复几十轮，让位置的把戏复杂到无人能穷举。
+        一根之字形的栅栏，最后变成了每块芯片里的标准工序。
+      </p>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>考考朋友：「不改一个字母的密码，为什么照样读不通？」——因为打乱顺序，也是加密。</p>
+      <div class="article-next">
+        <a href="enigma.html"><small>下一篇</small><b>让波兰在沦陷前就破译了它</b></a>
+        <a href="../index.html#act-rail"><small>回剧场</small><b>看字母之字穿行</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>
