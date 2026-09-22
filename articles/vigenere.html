@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>毁于一首藏头诗的「不可破译密码」· 密码剧场</title>
+  <meta name="description" content="维吉尼亚密码号称不可破译、悬赏十年无人领取，最终让破译者传世的线索藏在句首字母里。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <nav class="site-nav">
+      <a href="../index.html#act-frequency">频率分析</a>
+      <a href="../index.html#act-caesar">凯撒</a>
+      <a href="../index.html#act-vigenere">维吉尼亚</a>
+      <a href="../index.html#act-xor">XOR</a>
+      <a href="../articles.html">冷知识</a>
+    </nav>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">维吉尼亚 · VIGENÈRE</span>
+      <span>约 3 分钟</span>
+      <span>难度：入门</span>
+    </div>
+
+    <h1 class="article-title">毁于一首藏头诗的「不可破译密码」</h1>
+
+    <p class="article-lead">
+      悬赏十年无人领取、号称「勒·谢弗雷尔的不可破译密码」。
+      它真正被破解的那一刻，留下的却不是数学证明，而是一串被刻意留在句子开头的字母。
+    </p>
+
+    <div class="article-body">
+      <h2>先看它有多强</h2>
+      <p>
+        凯撒密码只用一张移位表，所以频率指纹原封不动。维吉尼亚的点子是：
+        <strong>准备一串关键字，每个字母用自己那张移位表，循环使用</strong>。
+        密钥是 <code>CIPHER</code>，那么第 1 个字母按 C 移、第 2 个按 I 移、第 7 个又回到 C……
+        单表替换变成了多表替换，E 的高频被摊平到七个不同的字母上——
+        柱状谱第一次失去了它的山峰。
+      </p>
+
+      <p>
+        1586 年，法国密码学家<strong>布莱斯·德·维吉尼亚</strong>把它完善成型。
+        当时的人们以为：只要字母的对应关系在不断变化，统计学就无从下手。
+        这个想法统治了密码界 <strong>三百年</strong>。
+      </p>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li>这套密码的原型其实来自 1553 年的意大利人<strong>吉罗拉莫·卡诺达</strong>，比维吉尼亚早了 33 年——但历史只记住了最后完善它的人（密码学里的「先发不一定制人」）。</li>
+          <li>第一个真正看穿它的人是<strong>查尔斯·巴贝奇</strong>——就是造出世界上第一台通用计算机原型的那位。他 1854 年就写出了破译法，却<strong>压着不发表</strong>，因为英国军方不希望对手知道。计算机之父顺手做了件保密工作，一藏就是几十年。</li>
+          <li>另一位独立发现破译法的威廉·弗里德曼，后来被称为「美国密码学之父」——他的头像曾印在美国的邮戳上。</li>
+        </ul>
+      </div>
+
+      <div class="pull-quote">
+        再强的密码，也挡不住人类<br>
+        「在句首藏话」的老毛病。
+      </div>
+
+      <h2>藏头诗：破译者亲手递出的钥匙</h2>
+      <p>
+        1854 年，破译者在整理旧密文档案时注意到一条怪线索：
+        某位军官写给友人的密信里，每句话的<strong>首字母</strong>连起来是另一句警句——
+        写信人偷偷用维吉尼亚密码的产物玩了首字母藏字。
+        这条「元线索」暴露了密钥长度的破绽：
+        只要猜出<strong>密钥长度</strong>，整段密文就会被拆成若干组凯撒密码，
+        每组单独做频率分析即可逐位攻克。
+      </p>
+
+      <p>
+        今天你能在剧场里亲手走完这条路线：<strong>先用重合指数量出密钥长度</strong>
+        （英语的 IC ≈ 0.067，随机文本只有 0.038），<strong>再逐列穷举</strong>。
+        当那串字母一位一位旋转归位时，三百年「不可破译」的招牌随之碎裂。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>第 III 幕已备好一段密钥为 <code>CIPHER</code> 的密文，点击开始，看密钥怎么被一位位抠出来。</p>
+        <a class="btn btn--neon" href="../index.html#act-vigenere">▶ 去第 III 幕破解它</a>
+      </div>
+
+      <h2>尾声：名字的讽刺</h2>
+      <p>
+        维吉尼亚本人没有破解任何东西，却让自己的名字和「密码」永远绑定；
+        真正的破译者巴贝奇默默无闻地保守着秘密。
+        而那套密码在死后一百多年才被正式命名为「维吉尼亚密码」——
+        连命名，都是一场迟到的加密。
+      </p>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>转发时可以配一句：「这条消息的句首字母，就是它的密钥。」</p>
+      <div class="article-next">
+        <a href="enigma.html"><small>下一篇</small><b>恩尼格玛：让波兰在沦陷前就破译了它</b></a>
+        <a href="../index.html#act-vigenere"><small>回剧场</small><b>看密钥逐位旋转归位</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

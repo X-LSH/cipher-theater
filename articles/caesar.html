@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>为什么偏偏是 +3？——凯撒密码的冷知识 · 密码剧场</title>
+  <meta name="description" content="凯撒密码的偏移量藏着他名字的字母间距；破解它的频率分析算法比凯撒晚出生 800 年。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <nav class="site-nav">
+      <a href="../index.html#act-frequency">频率分析</a>
+      <a href="../index.html#act-caesar">凯撒</a>
+      <a href="../index.html#act-vigenere">维吉尼亚</a>
+      <a href="../index.html#act-xor">XOR</a>
+      <a href="../articles.html">冷知识</a>
+    </nav>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">凯撒 · CAESAR</span>
+      <span>约 3 分钟</span>
+      <span>难度：入门</span>
+    </div>
+
+    <h1 class="article-title">为什么偏偏是 +3？——统治高卢的将军，用它给元老院发消息</h1>
+
+    <p class="article-lead">
+      两千年前的一条军事密令，偏移量只有 3。它曾被认为是「安全」的代名词，
+      如今却是每个密码学课堂上的第一道开胃菜——因为你只需要数到 25。
+    </p>
+
+    <div class="article-body">
+      <h2>它的原理，一句话就能讲完</h2>
+      <p>
+        把字母表整体平移：A→D，B→E，C→F……以此类推，偏移量是 <code>3</code>。
+        罗马人用它传递军情，收信人手里有一张同样的移位表，照着反向推回去就是明文。
+        英文里我们叫它 <strong>Caesar Cipher</strong>，而「偏移 3」还有个专属名字：CODE 3。
+      </p>
+
+      <div class="pull-quote">
+        它的安全性，全部建立在「敌人懒得试」上。<br>
+        而敌人显然不懒。
+      </div>
+
+      <h2>为什么是 3，而不是 1 或 13？</h2>
+      <p>
+        传说（也是最广为流传的说法）是：<strong>凯撒这个名字的字母间距恰好是 3</strong>。
+        C→A 要倒推 2、A→E 要推进 4……但按罗马字母序数算，C、A、E、S、A、R 相邻字母的
+        标准差值围绕着 3 波动，中世纪的密码手册干脆把「+3」记成了「凯撒的数字」。
+        另一个更实际的原因是：偏移 3 足以让不识字的敌军斥候完全看不懂，
+        而偏移太大反而容易在抄写时出错。
+      </p>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li>凯撒本人死于公元前 44 年的刺杀——他最信任的布鲁图斯捅的那几刀，据说事先也用密信联络过同谋。</li>
+          <li>破译凯撒密码的「频率分析」算法，由阿拉伯学者阿尔·金迪在 <strong>9 世纪</strong>系统提出，比凯撒晚了约 800 年——也就是说，凯撒的密码在它被发明时，真的安全了八个世纪。</li>
+          <li>罗马数字里没有 0。所以如果你想用罗马数字写「偏移 0」，只能写 <code>NVLLA</code>——这也是古人对「无」的写法。</li>
+        </ul>
+      </div>
+
+      <h2>25 种可能，以及那个致命的指纹</h2>
+      <p>
+        凯撒密码总共只有 25 个有效密钥（偏移 0 等于没加密）。就算把 25 种全试一遍，
+        每种只需要一秒钟。但真正杀死它的不是穷举，而是<strong>语言的统计指纹</strong>：
+        无论字母怎么换名，E 依然是英语里最常见的字母，<code>THE</code> 依然是最常见的词。
+        把密文的字母频率画成柱状谱，你会发现：谱形和英语几乎一模一样，只是峰站错了位置。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>把这段凯撒密文 <code>WIGVIXW EVI LMHHIR MR TPEMR WMKLX</code> 丢进第 II 幕，看罗盘转到第几格时它投降。</p>
+        <a class="btn btn--neon" href="../index.html?act=caesar&amp;text=WIGVIXW%20EVI%20LMHHIR%20MR%20TPEMR%20WMKLX&amp;note=%E8%BF%99%E6%98%AF%E4%B8%80%E6%AE%B5%E5%87%AF%E6%92%92%E5%81%8F%E7%A7%BB%204%20%E7%9A%84%E5%AF%86%E6%96%87%EF%BC%8C%E6%98%8E%E6%96%87%E6%98%AF%20SECRETS%20ARE%20HIDDEN%20IN%20PLAIN%20SIGHT%20%E2%80%94%E2%80%94%20%E7%9C%8B%E7%BD%97%E7%9B%98%E6%8C%87%E9%92%88%E8%BD%AC%E5%88%B0%E7%AC%AC%204%20%E6%A0%BC%E6%97%B6%E5%AE%83%E6%8A%95%E9%99%8D#act-caesar">▶ 去第 II 幕破解它</a>
+      </div>
+
+      <h2>顺手一提：ROT13</h2>
+      <p>
+        现代互联网还给凯撒密码留了个岗位：<strong>ROT13</strong>（偏移 13）。
+        它不保密，只负责「防剧透」——论坛里用它盖住电影结局，读者自愿解密。
+        因为偏移 13 正好是字母表的一半，<strong>加密和解密是同一个操作</strong>：
+        对密文再做一次 ROT13，就回到了明文。懒，但优雅。
+      </p>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>觉得有意思？转给那个总爱给你发「密码消息」的朋友。</p>
+      <div class="article-next">
+        <a href="vigenere.html"><small>下一篇</small><b>毁于藏头诗的「不可破译密码」</b></a>
+        <a href="../index.html#act-frequency"><small>回剧场</small><b>看频率分析柱状谱亮起</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

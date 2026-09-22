@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>恩尼格玛：让波兰在沦陷前就破译了它 · 密码剧场</title>
+  <meta name="description" content="三个波兰数学家、一台被称为「炸弹」的机器、每天早晨重置的口令——恩尼格玛密码背后的真实故事。">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html">密码<span>剧场</span></a>
+    <nav class="site-nav">
+      <a href="../index.html#act-frequency">频率分析</a>
+      <a href="../index.html#act-caesar">凯撒</a>
+      <a href="../index.html#act-vigenere">维吉尼亚</a>
+      <a href="../index.html#act-xor">XOR</a>
+      <a href="../articles.html">冷知识</a>
+    </nav>
+  </header>
+
+  <article class="article-wrap">
+    <a class="article-back" href="../articles.html">← 全部冷知识</a>
+
+    <div class="article-meta">
+      <span class="tag">恩尼格玛 · ENIGMA</span>
+      <span>约 4 分钟</span>
+      <span>难度：进阶</span>
+    </div>
+
+    <h1 class="article-title">恩尼格玛：让波兰在沦陷前就破译了它</h1>
+
+    <p class="article-lead">
+      二战电影里最著名的密码机，往往把功劳记在图灵头上。
+      但第一台「炸弹」响起来的时候，图灵还在剑桥读研究生——
+      破译恩尼格玛的星火，来自华沙。
+    </p>
+
+    <div class="article-body">
+      <h2>它凭什么让德国人放心</h2>
+      <p>
+        恩尼格玛的核心是<strong>三个不断自转的转子</strong>：你按一个键，
+        电流穿过三个转子、在反射板上折返、再反向穿过转子点亮一个灯泡。
+        每按一键，最右边的转子就转一格——<strong>同一个字母下次会加密成完全不同的字母</strong>。
+        这相当于维吉尼亚密码的超级加强版：字母表在以秒为单位不停换。
+        再加上接线板把若干字母对对换，军用型的可能设置约有
+        <strong>10<sup>22</sup></strong> 种——当时有人估算：穷举它需要的时间超过宇宙年龄。
+      </p>
+
+      <div class="fact-box">
+        <h4>🧊 三个可以现学现卖的冷知识</h4>
+        <ul>
+          <li>恩尼格玛有个致命设计约束：<strong>明文字母永远不会加密成它自己</strong>（反射板结构决定的）。这条「弱点」成了破译者过滤错误假设的第一道筛子。</li>
+          <li>德军每天早晨 6 点重置当日密钥，用的是<strong>一张会烧掉的日密钥表</strong>。但不少潜艇指挥官图省事，连续几周用同一组设置——习惯，是密码最大的天敌。</li>
+          <li>缴获的恩尼格玛机曾被藏进<strong>钢琴、手提箱甚至铝锭</strong>里运出德国；英方为保密把破解成果统称为「ULTRA 机密」，其等级之高，足以影响战役决策却绝不能让德方察觉。</li>
+        </ul>
+      </div>
+
+      <div class="pull-quote">
+        战争中最危险的时刻，<br>
+        不是密码被破译，而是敌人不知道它已被破译。
+      </div>
+
+      <h2>华沙三人组与「炸弹」</h2>
+      <p>
+        1932 年，波兰军情处把缴获的文件交给三个年轻的数学家：
+        <strong>马里安·雷耶夫斯基、耶日·罗日基、亨里克·齐加尔斯基</strong>。
+        他们用纯数学方法——置换轮理论与「位点法」——重建了德军每天的密钥设置，
+        并在 1938 年造出了机械辅助装置 <strong>Bomba（炸弹）</strong>。
+      </p>
+      <p>
+        1939 年 7 月，战争阴云压境，波兰把全部成果和方法<strong>秘密移交英法</strong>。
+        三个月后德国入侵波兰。英国据此在布莱切利园继续推进，
+        图灵等人设计的「bombe」正是波兰炸弹的直系后代——
+        战争结束几十年后，三位波兰数学家的贡献才被公开承认。
+      </p>
+
+      <p class="dim">
+        值得一提的是：恩尼格玛加密的是<strong>通信内容</strong>，
+        而二战中更难缠的是<strong>雷达与潜艇方位</strong>这类「已知明文」问题——
+        德军报文里固定的天气电文开头，成了盟军做「已知明文攻击」的经典靶子，
+        和剧场第 IV 幕里那个固定的 <code>ATTACK AT DAWN</code> 报头如出一辙。
+      </p>
+
+      <div class="article-cta">
+        <p><b>回剧场试试：</b>第 IV 幕演示了已知明文攻击——只要密钥在重复使用，一段猜到的明文就能把它整个拖出来。</p>
+        <a class="btn btn--neon" href="../index.html#act-xor">▶ 去第 IV 幕发动攻击</a>
+      </div>
+    </div>
+
+    <div class="article-end">
+      <button class="btn btn--ghost" type="button" data-copy-link>🔗 复制本文链接</button>
+      <p>下一个饭局话题：「恩尼格玛其实是波兰人先破的。」</p>
+      <div class="article-next">
+        <a href="otp.html"><small>下一篇</small><b>唯一被证明「绝对安全」的加密</b></a>
+        <a href="../index.html"><small>回剧场</small><b>四幕破译总览</b></a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐</p>
+  </footer>
+
+  <script src="../js/core.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

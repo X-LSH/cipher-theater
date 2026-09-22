@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>密码剧场 · Cipher Theater｜破译过程可视化</title>
+  <meta name="description" content="把一段密文丢进来：频率分析柱状谱亮起、凯撒与维吉尼亚密钥逐位旋转破解、XOR 比特流滚动解体——四幕交互式密码破译可视化剧场。">
+  <meta property="og:title" content="密码剧场 · Cipher Theater">
+  <meta property="og:description" content="四幕交互式破译可视化：看密文在你眼前被撕开。">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 解谜成功时的整屏霓虹闪烁 -->
+  <div id="neon-flash" class="neon-flash" aria-hidden="true">
+    <div class="neon-flash__text">✓ 明文已解出 <span>DECODED</span></div>
+  </div>
+
+  <canvas id="matrixCanvas" class="matrix-bg" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="logo" href="index.html">密码<span>剧场</span></a>
+    <nav class="site-nav">
+      <a href="#act-frequency">频率分析</a>
+      <a href="#act-caesar">凯撒</a>
+      <a href="#act-vigenere">维吉尼亚</a>
+      <a href="#act-xor">XOR</a>
+      <a href="articles.html">冷知识</a>
+    </nav>
+  </header>
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero">
+    <p class="hero__kicker">CIPHER&nbsp;THEATER</p>
+    <h1 class="hero__title">把密文丢进来，<br><span class="neon-underline">看它在你眼前被撕开</span></h1>
+    <p class="hero__sub">
+      频率分析的柱状谱亮起 · 凯撒罗盘旋转穷举 · 维吉尼亚密钥逐位崩塌 · XOR 比特流滚动解体——
+      四幕交互式破译剧场，全部在你的浏览器里本地运行。
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn--neon" href="#act-frequency">▶ 进入剧场</a>
+      <a class="btn btn--ghost" href="articles.html">冷知识文章 →</a>
+    </div>
+    <p class="hero__hint">无需注册 · 开源 · 试试把《我很确定密文能被破解》之类的句子加密后丢进来</p>
+    <div class="hero__scroll" aria-hidden="true"></div>
+  </section>
+
+  <main>
+    <!-- ======================= 第 I 幕：频率分析 ======================= -->
+    <section id="act-frequency" class="act">
+      <div class="act__head">
+        <span class="act__num">第 I 幕</span>
+        <h2>频率分析 · 柱状谱亮起</h2>
+        <p>
+          一千多年前的阿拉伯学者就发现：英语里 E 出现得最频繁。把密文的 26 个字母占比画成柱状谱，
+          <b>密码换掉了字母，却换不掉语言的指纹</b>。切换下面的样例，观察谱形怎么变（或怎么不变）。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">密文 / 明文（自动忽略大小写与标点）</span>
+            <textarea id="freqInput" rows="3" spellcheck="false"
+              placeholder="在此粘贴密文，柱状谱会实时更新…"></textarea>
+          </label>
+          <div class="field">
+            <span class="field__label">样例</span>
+            <div class="chip-row">
+              <button class="chip" data-freq-sample="plain" type="button">英语原文</button>
+              <button class="chip is-active" data-freq-sample="caesar" type="button">凯撒密文</button>
+              <button class="chip" data-freq-sample="vigenere" type="button">维吉尼亚密文</button>
+              <button class="chip" data-freq-sample="xor" type="button">XOR 密文(HEX)</button>
+            </div>
+          </div>
+          <button id="freqAnalyze" class="btn btn--neon" type="button">⚡ 分析</button>
+        </div>
+
+        <div id="freqChart" class="freq-chart" role="img" aria-label="字母频率柱状图"></div>
+
+        <div class="chart-legend">
+          <span class="legend-item"><i class="dot dot--cyan"></i>密文实测频率</span>
+          <span class="legend-item"><i class="dot dot--magenta"></i>英语标准频率参照线</span>
+          <span class="legend-item legend-item--top">■ 高频 Top3</span>
+        </div>
+
+        <div class="readouts">
+          <div class="readout"><span class="readout__label">英语契合度</span><b id="freqScore">—</b></div>
+          <div class="readout readout--wide"><span class="readout__label">Top3 高频字母</span><b id="freqTop">—</b></div>
+        </div>
+        <p id="freqVerdict" class="verdict"></p>
+      </div>
+
+      <p class="act__foot">
+        💡 试试「凯撒密文」：谱形和英语几乎一样，但最高的峰站错了位置——字母改了名，统计规律还在。
+        <a href="articles/caesar.html">凯撒密码的冷知识 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 II 幕：凯撒 ======================= -->
+    <section id="act-caesar" class="act">
+      <div class="act__head">
+        <span class="act__num">第 II 幕</span>
+        <h2>凯撒密码 · 罗盘旋转穷举</h2>
+        <p>
+          凯撒把每个字母往后推 3 格。听起来天衣无缝——直到你意识到<b>只有 25 种可能</b>。
+          按下破译，罗盘指针会旋转扫过全部偏移，每转一格就给候选明文打一次分，最高分者胜出。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">凯撒密文</span>
+            <textarea id="caesarInput" rows="2" spellcheck="false" placeholder="粘贴凯撒密文…"></textarea>
+          </label>
+          <div class="field field--btns">
+            <button id="caesarCrack" class="btn btn--neon" type="button">⚙ 开始破译</button>
+            <div class="btn-row">
+              <button id="caesarSample" class="btn btn--ghost btn--sm" type="button">换样例</button>
+              <button id="caesarReset" class="btn btn--ghost btn--sm" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="caesar-stage">
+          <!-- 罗盘 -->
+          <div class="dial" aria-hidden="true">
+            <svg viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="92" class="dial__ring"/>
+              <circle cx="100" cy="100" r="74" class="dial__ring dial__ring--inner"/>
+              <g class="dial__ticks" id="dialTicks"></g>
+              <g id="dialNeedle" class="dial__needle">
+                <line x1="100" y1="100" x2="100" y2="26"/>
+                <circle cx="100" cy="26" r="4"/>
+              </g>
+              <circle cx="100" cy="100" r="5" class="dial__hub"/>
+            </svg>
+            <div class="dial__center"><span id="dialLabel">—</span><small>SHIFT</small></div>
+          </div>
+
+          <!-- 26 个候选 -->
+          <div class="caesar-rows" id="caesarRows" aria-live="polite"></div>
+        </div>
+
+        <p class="stage-status" id="caesarStatus">待命</p>
+
+        <!-- 胜出结果 -->
+        <div id="caesarResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <button id="caesarCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+          </div>
+          <p id="caesarHits" class="reveal-hits"></p>
+          <blockquote id="caesarPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        为什么偏偏是 <b>+3</b>？因为凯撒的名字字母间距正好是 3。
+        <a href="articles/caesar.html">更多冷知识 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 III 幕：维吉尼亚 ======================= -->
+    <section id="act-vigenere" class="act">
+      <div class="act__head">
+        <span class="act__num">第 III 幕</span>
+        <h2>维吉尼亚 · 密钥逐位旋转归位</h2>
+        <p>
+          维吉尼亚用一串字母轮换着推移，把频率谱抹平，曾号称「不可破译密码」。
+          破解分两步：<b>先量出密钥长度</b>（重合指数 + 卡斯基检验），
+          <b>再逐列把它拆成 26 选 1 的凯撒题</b>——看着密钥字母一位一位旋转归位。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">维吉尼亚密文</span>
+            <textarea id="vigInput" rows="2" spellcheck="false" placeholder="粘贴维吉尼亚密文（建议 60+ 字母）…"></textarea>
+          </label>
+          <div class="field field--btns">
+            <button id="vigCrack" class="btn btn--neon" type="button">⚙ 开始破译</button>
+            <div class="btn-row">
+              <button id="vigSample" class="btn btn--ghost btn--sm" type="button">换样例</button>
+              <button id="vigReset" class="btn btn--ghost btn--sm" type="button">重置</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vig-step">
+          <h4 class="vig-step__title">STEP 1 · 测量密钥长度（重合指数越高，越像英语的 0.067）</h4>
+          <div id="vigIC" class="ic-chart" aria-live="polite"></div>
+          <p id="vigVerdict" class="ic-verdict"></p>
+          <p id="vigKasiski" class="kasiski"></p>
+        </div>
+
+        <div class="vig-step">
+          <h4 class="vig-step__title">STEP 2 · 密钥字母逐位旋转破解</h4>
+          <div id="vigSlots" class="key-slots"></div>
+        </div>
+
+        <p class="stage-status" id="vigStatus">待命</p>
+
+        <div id="vigResult" class="reveal-panel">
+          <div class="reveal-panel__head">
+            <span class="reveal-panel__tag">明文已解出</span>
+            <div class="btn-row">
+              <span class="key-badge">密钥 <b id="vigKey"></b></span>
+              <button id="vigCopyKey" class="btn btn--ghost btn--sm" type="button">复制密钥</button>
+              <button id="vigCopy" class="btn btn--ghost btn--sm" type="button">复制明文</button>
+            </div>
+          </div>
+          <blockquote id="vigPlain" class="reveal-text"></blockquote>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        这位「不可破译」的密码，最终毁于一位破译者写给好友的<b>藏头诗</b>。
+        <a href="articles/vigenere.html">看那段翻车史 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 第 IV 幕：XOR ======================= -->
+    <section id="act-xor" class="act">
+      <div class="act__head">
+        <span class="act__num">第 IV 幕</span>
+        <h2>XOR 流密码 · 比特流滚动解体</h2>
+        <p>
+          现代加密的最底层动作只有一个：<b>异或</b>——相同得 0，不同得 1。
+          按下运行，看明文、密钥、密文三行比特流逐位点亮；再用「已知明文攻击」，
+          体会为什么<b>重复使用的密钥等于裸奔</b>。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel__controls">
+          <label class="field field--grow">
+            <span class="field__label">明文（最多 32 字符）</span>
+            <input id="xorPlain" type="text" maxlength="32" spellcheck="false">
+          </label>
+          <label class="field">
+            <span class="field__label">重复密钥</span>
+            <input id="xorKey" type="text" maxlength="16" spellcheck="false">
+          </label>
+          <div class="field field--btns">
+            <button id="xorRun" class="btn btn--neon" type="button">▶ 运行加密</button>
+            <button id="xorSample" class="btn btn--ghost btn--sm" type="button">样例</button>
+          </div>
+        </div>
+
+        <div id="xorStream" class="bit-stream" aria-live="polite"></div>
+
+        <div class="hex-strip">
+          <span class="hex-strip__label">密文 C（HEX）</span>
+          <code id="xorHex">—</code>
+          <button id="xorCopyHex" class="btn btn--ghost btn--sm" type="button">复制</button>
+        </div>
+
+        <p class="stage-status" id="xorStatus">待命</p>
+
+        <div id="xorAttack" class="attack-panel">
+          <div class="attack-panel__head">
+            <h4>🔓 已知明文攻击</h4>
+            <p>假设攻击者恰好知道密文开头是常见的报头（比如 <code>ATTACK AT DAWN</code>）：</p>
+            <button id="xorAttackBtn" class="btn btn--magenta" type="button">发起攻击</button>
+          </div>
+          <div id="xorSteps" class="attack-steps"></div>
+          <div id="xorKeyReveal" class="key-reveal"></div>
+        </div>
+      </div>
+
+      <p class="act__foot">
+        有一种加密，密钥和明文一样长、只用一次、绝不重复——它是唯一被数学证明「绝对安全」的。
+        <a href="articles/otp.html">一次性密码本 →</a>
+      </p>
+    </section>
+
+    <!-- ======================= 文章导读 ======================= -->
+    <section id="act-articles" class="act act--teaser">
+      <div class="act__head">
+        <span class="act__num">幕间休息</span>
+        <h2>冷知识 · 读完可以去炫耀的那种</h2>
+        <p>四篇短文，每篇三分钟，配着上面的剧场看效果翻倍。</p>
+      </div>
+      <div class="card-grid">
+        <a class="card" href="articles/caesar.html">
+          <span class="card__tag">凯撒</span>
+          <h3>为什么偏偏是 +3？</h3>
+          <p>统治高卢的将军用它给元老院发消息，而破解它的算法比凯撒晚出生了 800 年。</p>
+          <span class="card__more">阅读 →</span>
+        </a>
+        <a class="card" href="articles/vigenere.html">
+          <span class="card__tag">维吉尼亚</span>
+          <h3>毁于一首藏头诗的「不可破译密码」</h3>
+          <p>号称数学无法攻破，最终让破译者传世的线索，藏在某人写给朋友的句首字母里。</p>
+          <span class="card__more">阅读 →</span>
+        </a>
+        <a class="card" href="articles/enigma.html">
+          <span class="card__tag">恩尼格玛</span>
+          <h3>让波兰在沦陷前就破译了它</h3>
+          <p>三个数学天才、一台「炸弹机」，和每天早晨必须重置的口令。</p>
+          <span class="card__more">阅读 →</span>
+        </a>
+        <a class="card" href="articles/otp.html">
+          <span class="card__tag">OTP</span>
+          <h3>唯一被证明「绝对安全」的加密</h3>
+          <p>代价是密钥比明文还难保管——核手提箱里至今仍回响着它的思想。</p>
+          <span class="card__more">阅读 →</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__brand">密码剧场 <span>CIPHER THEATER</span></div>
+    <p>所有破译都在你的浏览器里本地完成，密文不会离开这台设备。</p>
+    <p class="site-footer__links">
+      <a href="articles.html">冷知识</a> ·
+      <a href="index.html#act-frequency">剧场</a> ·
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </p>
+    <p class="site-footer__copy">© <span id="year"></span> cipher-theater · 仅供学习与娱乐，请勿用于保护真正的秘密</p>
+  </footer>
+
+  <script src="js/core.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/frequency.js"></script>
+  <script src="js/caesar.js"></script>
+  <script src="js/vigenere.js"></script>
+  <script src="js/xor.js"></script>
+  <script>
+    // 罗盘 26 格刻度（纯装饰，随脚本生成）
+    (function () {
+      var g = document.getElementById('dialTicks');
+      if (!g) return;
+      var html = '';
+      for (var i = 0; i < 26; i++) {
+        var a = (i / 26) * Math.PI * 2 - Math.PI / 2;
+        var r1 = 74, r2 = i % 13 === 0 ? 62 : 68;
+        var x1 = 100 + Math.cos(a) * r1, y1 = 100 + Math.sin(a) * r1;
+        var x2 = 100 + Math.cos(a) * r2, y2 = 100 + Math.sin(a) * r2;
+        html += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) +
+                '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '"/>';
+      }
+      g.innerHTML = html;
+    })();
+  </script>
+</body>
+</html>
